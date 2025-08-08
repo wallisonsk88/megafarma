@@ -1,0 +1,1662 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MegaFarma - Comparação de Preços</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, #dc3545, #b02a37);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .btn-custom {
+            border-radius: 25px;
+            padding: 10px 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-responsive {
+            max-height: 60vh;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+        }
+
+        .table-responsive .table {
+            margin-bottom: 0;
+        }
+
+        .table-responsive .table thead th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background-color: #dc3545;
+            border-top: none;
+        }
+
+        .table th {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            font-weight: 600;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .table td {
+            vertical-align: middle;
+            border-color: #dee2e6;
+        }
+
+        .preco-input {
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            padding: 5px 10px;
+            width: 100%;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .preco-input:focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+            outline: none;
+        }
+
+        .preco-menor {
+            background-color: #f8d7da !important;
+            border-color: #f5c6cb !important;
+        }
+
+        .menor-preco {
+            background-color: #dc3545 !important;
+            border-color: #b02a37 !important;
+            color: white !important;
+            font-weight: bold !important;
+        }
+
+        .menor-preco input {
+            background-color: #dc3545 !important;
+            border-color: #b02a37 !important;
+            color: white !important;
+            font-weight: bold !important;
+        }
+
+        .loading {
+            display: none;
+        }
+
+        .alert {
+            border-radius: 10px;
+            border: none;
+        }
+
+        .produto-descricao {
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .preco-referencia {
+            font-weight: 600;
+            color: #dc3545;
+            text-align: center;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 280px;
+            background: linear-gradient(135deg, #dc3545, #dc3545);
+            color: white;
+            padding: 1rem;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-header h5 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .sidebar-section {
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-section h6 {
+            color: #adb5bd;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+
+        .sidebar .btn {
+            width: 100%;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar .btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        .sidebar .btn-primary {
+            background: rgba(76, 12, 31, 0.6);
+            border-color: rgba(76, 12, 31, 0.7);
+        }
+
+        .sidebar .btn-primary:hover {
+            background: rgba(76, 12, 31, 0.7);
+            border-color: rgba(76, 12, 31, 0.8);
+        }
+
+        .sidebar .btn-danger {
+            background: rgba(76, 12, 31, 0.5);
+            border-color: rgba(76, 12, 31, 0.6);
+        }
+
+        .sidebar .btn-danger:hover {
+            background: rgba(76, 12, 31, 0.6);
+            border-color: rgba(76, 12, 31, 0.7);
+        }
+
+        .sidebar .btn-success {
+            background: rgba(76, 12, 31, 0.6);
+            border-color: rgba(76, 12, 31, 0.7);
+        }
+
+        .sidebar .btn-success:hover {
+            background: rgba(76, 12, 31, 0.7);
+            border-color: rgba(76, 12, 31, 0.8);
+        }
+
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+        }
+
+        /* Toggle Button for Mobile */
+        #sidebarToggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: #dc3545;
+            border: none;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        #sidebarToggle:hover {
+            background: #b02a37;
+            transform: scale(1.1);
+        }
+
+        .bi-trash {
+            color: white !important;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            #sidebarToggle {
+                display: flex;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+
+            <h1>
+                <i class="bi bi-pharmacy2 me-2"></i>
+                MegaFarma
+            </h1>
+            <h5>
+                <i class="bi bi-pharmacy2 me-2"></i>
+
+            </h5>
+            <h5>
+                <i class="bi bi-pharmacy2 me-2"></i>
+
+            </h5>
+        </div>
+
+
+
+        <div class="sidebar-section">
+            <h6>Importar Dados</h6>
+            <form id="uploadForm" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <input type="file" class="form-control" id="pdfFile" accept=".pdf" required>
+                </div>
+                <button class="btn btn-primary" type="submit" id="uploadBtn">
+                    <i class="bi bi-upload me-2"></i>Importar PDF
+                </button>
+            </form>
+        </div>
+
+        <div class="sidebar-section">
+            <h6>Gerenciar Fornecedores</h6>
+            <div class="mb-3">
+                <input type="text" class="form-control" id="nomeFornecedor" placeholder="Nome do fornecedor">
+            </div>
+            <button class="btn btn-success" type="button" id="criarFornecedorBtn">
+                <i class="bi bi-plus-circle me-2"></i>Criar Fornecedor
+            </button>
+        </div>
+
+        <div class="sidebar-section">
+            <h6>Ações</h6>
+            <button type="button" class="btn btn-danger" onclick="excluirTabela()" id="btnExcluir"
+                style="display: none;">
+                <i class="bi bi-trash me-2"></i>Excluir Tabela Atual
+            </button>
+            <button type="button" class="btn btn-success" onclick="baixarRelatorio()" id="btnRelatorio"
+                style="display: none;">
+                <i class="bi bi-file-earmark-pdf me-2"></i>Baixar Relatório PDF
+            </button>
+
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header-section">
+            <div class="container">
+                <div class="text-center">
+                    <h3 class="mb-0">
+                        <i class="bi bi-pharmacy2 me-3"></i>
+                        Comparação de Preços
+                    </h3>
+                    <p class="mb-0 mt-2 opacity-75">Sistema de comparação de preços de medicamentos</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+
+            <!-- Campo de Pesquisa -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="bi bi-search text-danger me-2"></i>
+                                Pesquisar Produto
+                            </h5>
+                            <p class="card-text text-muted">Digite o nome do produto para encontrar rapidamente na
+                                tabela
+                            </p>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="campoPesquisa"
+                                    placeholder="Digite o nome do produto para pesquisar... (busca inteligente)"
+                                    oninput="pesquisarProduto()" autocomplete="off" spellcheck="false">
+                                <button class="btn btn-outline-secondary" type="button" onclick="limparPesquisa()">
+                                    <i class="bi bi-x-circle me-2"></i>Limpar
+                                </button>
+                            </div>
+                            <div id="resultadoPesquisa" class="text-muted small mt-2">
+                                Digite para pesquisar produtos na tabela
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alertas -->
+            <div id="alertContainer"></div>
+
+            <!-- Loading -->
+            <div class="loading text-center" id="loading">
+                <div class="spinner-border text-danger" role="status">
+                    <span class="visually-hidden">Carregando...</span>
+                </div>
+                <p class="mt-2">Processando...</p>
+            </div>
+
+            <!-- Tabela Principal -->
+            <div class="table-container" id="tabelaContainer" style="display: none;">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="mb-0">
+                        <i class="bi bi-table me-2"></i>
+                        Comparação de Preços
+                    </h4>
+                    <div class="d-flex align-items-center gap-3">
+                        <button class="btn btn-success btn-custom" id="btnMelhoresPrecos"
+                            onclick="abrirTabelaMelhoresPrecos()">
+                            <i class="bi bi-trophy me-2"></i>
+                            Melhores Preços
+                        </button>
+                        <button class="btn btn-warning btn-custom" id="btnLimparTabela" onclick="limparTabela()">
+                            <i class="bi bi-trash me-2"></i>
+                            Limpar Tabela
+                        </button>
+                        <small class="text-muted" id="totalProdutos"></small>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover" id="tabelaPrecos">
+                        <thead>
+                            <tr>
+                                <th style="width: 50%;">Produto</th>
+                                <th style="width: 15%;">TOUREIRO</th>
+                                <!-- Colunas de fornecedores serão adicionadas dinamicamente -->
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaBody">
+                            <!-- Dados serão carregados dinamicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Estado Vazio -->
+            <div class="empty-state" id="emptyState">
+                <i class="bi bi-inbox"></i>
+                <h4>Nenhum produto importado</h4>
+                <p>Faça upload de um arquivo PDF para começar a comparar preços</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Melhores Preços -->
+    <div class="modal fade" id="modalMelhoresPrecos" tabindex="-1" aria-labelledby="modalMelhoresPrecosLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="modalMelhoresPrecosLabel">
+                        <i class="bi bi-trophy me-2"></i>
+                        Melhores Preços por Produto
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <p class="mb-0 text-muted">Produtos com os menores preços encontrados</p>
+
+                    </div>
+
+                    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                        <table class="table table-hover" id="tabelaMelhoresPrecos">
+                            <thead class="table-success sticky-top">
+                                <tr>
+                                    <th style="width: 40%;">Produto</th>
+                                    <th style="width: 15%;">Melhor Preço</th>
+                                    <th style="width: 20%;">Fornecedor</th>
+                                    <th style="width: 15%;">Quantidade</th>
+                                    <th style="width: 10%;">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelaMelhoresPrecosBody">
+                                <!-- Dados serão carregados dinamicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Total Geral Fixo -->
+                    <div class="border-top bg-light p-3">
+                        <table class="table table-borderless mb-0">
+                            <tr class="table-warning">
+                                <th colspan="4" class="text-end" style="width: 85%;">Total Geral:</th>
+                                <th id="totalGeral" style="width: 15%;">R$ 0,00</th>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-success" onclick="gerarPedido()">Gerar Pedido</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Toggle Button -->
+    <button id="sidebarToggle">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        /**
+         * Variáveis globais para armazenar dados
+         */
+        let dadosTabela = {
+            produtos: [],
+            fornecedores: [],
+            precos: {}
+        };
+
+        /**
+         * Inicializa o sistema ao carregar a página
+         */
+        document.addEventListener('DOMContentLoaded', function () {
+            carregarDados();
+            configurarEventos();
+        });
+
+        /**
+         * Configura todos os event listeners
+         */
+        function configurarEventos() {
+            // Upload de PDF
+            document.getElementById('uploadForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+                uploadPDF();
+            });
+
+            // Criar fornecedor
+            document.getElementById('criarFornecedorBtn').addEventListener('click', criarFornecedor);
+
+            // Enter no campo de fornecedor
+            document.getElementById('nomeFornecedor').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    criarFornecedor();
+                }
+            });
+
+            // Toggle sidebar em dispositivos móveis
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.getElementById('sidebar');
+
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function () {
+                    sidebar.classList.toggle('show');
+                });
+            }
+
+            // Fechar sidebar ao clicar fora em dispositivos móveis
+            document.addEventListener('click', function (e) {
+                if (window.innerWidth <= 768) {
+                    if (!sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
+                        sidebar.classList.remove('show');
+                    }
+                }
+            });
+        }
+
+        /**
+         * Carrega dados do servidor e atualiza a tabela
+         */
+        async function carregarDados() {
+            try {
+                const response = await fetch('/dados_tabela');
+                dadosTabela = await response.json();
+                atualizarTabela();
+
+                // Mostra/esconde botões baseado na existência de produtos
+                const btnExcluir = document.getElementById('btnExcluir');
+                const btnRelatorio = document.getElementById('btnRelatorio');
+                if (dadosTabela.produtos && dadosTabela.produtos.length > 0) {
+                    btnExcluir.style.display = 'block';
+                    btnRelatorio.style.display = 'block';
+                } else {
+                    btnExcluir.style.display = 'none';
+                    btnRelatorio.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+                mostrarAlerta('Erro ao carregar dados', 'danger');
+            }
+        }
+
+        /**
+         * Exclui a tabela atual do banco de dados
+         */
+        async function excluirTabela() {
+            if (!confirm('Tem certeza que deseja excluir a tabela atual? Esta ação não pode ser desfeita.')) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/excluir_tabela', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    mostrarAlerta('Tabela excluída com sucesso! Agora você pode carregar uma nova.', 'success');
+
+                    // Limpa os dados locais
+                    dadosTabela = {
+                        produtos: [],
+                        fornecedores: [],
+                        precos: {}
+                    };
+
+                    // Atualiza a interface
+                    atualizarTabela();
+
+                    // Esconde os botões de ação
+                    document.getElementById('btnExcluir').style.display = 'none';
+                    document.getElementById('btnRelatorio').style.display = 'none';
+
+                    // Limpa o campo de arquivo
+                    document.getElementById('pdfFile').value = '';
+                } else {
+                    mostrarAlerta('Erro ao excluir tabela: ' + (result.error || 'Erro desconhecido'), 'danger');
+                }
+            } catch (error) {
+                console.error('Erro ao excluir tabela:', error);
+                mostrarAlerta('Erro ao excluir tabela. Tente novamente.', 'danger');
+            }
+        }
+
+        /**
+         * Faz upload do arquivo PDF
+         */
+        async function uploadPDF() {
+            const fileInput = document.getElementById('pdfFile');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                mostrarAlerta('Selecione um arquivo PDF', 'warning');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('pdf_file', file);
+
+            mostrarLoading(true);
+
+            try {
+                const response = await fetch('/upload_pdf', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    mostrarAlerta(result.message, 'success');
+                    fileInput.value = '';
+                    await carregarDados();
+                } else {
+                    mostrarAlerta(result.error, 'danger');
+                }
+            } catch (error) {
+                console.error('Erro no upload:', error);
+                mostrarAlerta('Erro ao processar arquivo', 'danger');
+            } finally {
+                mostrarLoading(false);
+            }
+        }
+
+        /**
+         * Cria um novo fornecedor
+         */
+        async function criarFornecedor() {
+            const nomeInput = document.getElementById('nomeFornecedor');
+            const nome = nomeInput.value.trim();
+
+            if (!nome) {
+                mostrarAlerta('Digite o nome do fornecedor', 'warning');
+                return;
+            }
+
+            try {
+                const response = await fetch('/criar_fornecedor', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ nome: nome })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    mostrarAlerta(`Fornecedor "${result.nome}" criado com sucesso!`, 'success');
+                    nomeInput.value = '';
+                    await carregarDados();
+                } else {
+                    mostrarAlerta(result.error, 'danger');
+                }
+            } catch (error) {
+                console.error('Erro ao criar fornecedor:', error);
+                mostrarAlerta('Erro ao criar fornecedor', 'danger');
+            }
+        }
+
+        /**
+         * Baixa o relatório PDF com os menores preços
+         */
+        async function baixarRelatorio() {
+            try {
+                mostrarLoading(true);
+
+                const response = await fetch('/gerar_relatorio', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    // Criar um blob com o PDF
+                    const blob = await response.blob();
+
+                    // Criar URL temporária para download
+                    const url = window.URL.createObjectURL(blob);
+
+                    // Criar elemento de link temporário para download
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `relatorio_menores_precos_${new Date().toISOString().split('T')[0]}.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+
+                    // Limpar recursos
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+
+                    mostrarAlerta('Relatório baixado com sucesso!', 'success');
+                } else {
+                    const error = await response.json();
+                    mostrarAlerta('Erro ao gerar relatório: ' + (error.error || 'Erro desconhecido'), 'danger');
+                }
+            } catch (error) {
+                console.error('Erro ao baixar relatório:', error);
+                mostrarAlerta('Erro ao baixar relatório', 'danger');
+            } finally {
+                mostrarLoading(false);
+            }
+        }
+
+        /**
+         * Exclui um fornecedor específico
+         */
+        async function excluirFornecedor(fornecedorId, nomeFornecedor) {
+            if (!confirm(`Tem certeza que deseja excluir o fornecedor "${nomeFornecedor}"?\n\nTodos os preços deste fornecedor serão perdidos.`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/excluir_fornecedor', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ fornecedor_id: fornecedorId })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    mostrarAlerta(`Fornecedor "${nomeFornecedor}" excluído com sucesso!`, 'success');
+                    await carregarDados();
+                } else {
+                    mostrarAlerta(result.error, 'danger');
+                }
+            } catch (error) {
+                console.error('Erro ao excluir fornecedor:', error);
+                mostrarAlerta('Erro ao excluir fornecedor', 'danger');
+            }
+        }
+
+        /**
+         * Atualiza a tabela principal com os dados carregados
+         */
+        function atualizarTabela() {
+            const tabelaContainer = document.getElementById('tabelaContainer');
+            const emptyState = document.getElementById('emptyState');
+            const totalProdutos = document.getElementById('totalProdutos');
+
+            if (dadosTabela.produtos.length === 0) {
+                tabelaContainer.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            tabelaContainer.style.display = 'block';
+            emptyState.style.display = 'none';
+            totalProdutos.textContent = `${dadosTabela.produtos.length} produtos`;
+
+            // Atualizar cabeçalho da tabela
+            const thead = document.querySelector('#tabelaPrecos thead tr');
+            thead.innerHTML = `
+                <th style="width: 50%;">Produto</th>
+                <th style="width: 15%;">TOUREIRO</th>
+            `;
+
+            // Adicionar colunas de fornecedores
+            dadosTabela.fornecedores.forEach(fornecedor => {
+                const th = document.createElement('th');
+                th.style.width = '15%';
+                th.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>
+                            <i class="bi bi-building me-1"></i>
+                            ${fornecedor.nome}
+                        </span>
+                        <button class="btn btn-sm btn-outline-danger" 
+                                onclick="excluirFornecedor(${fornecedor.id}, '${fornecedor.nome}')"
+                                title="Excluir fornecedor">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                `;
+                thead.appendChild(th);
+            });
+
+            // Atualizar corpo da tabela
+            const tbody = document.getElementById('tabelaBody');
+            tbody.innerHTML = '';
+
+            dadosTabela.produtos.forEach(produto => {
+                const tr = document.createElement('tr');
+                tr.dataset.produtoId = produto.id;
+
+                // Coluna do produto
+                const tdProduto = document.createElement('td');
+                tdProduto.className = 'produto-descricao';
+                tdProduto.textContent = produto.descricao;
+                tr.appendChild(tdProduto);
+
+                // Coluna do preço TOUREIRO
+                const tdReferencia = document.createElement('td');
+                tdReferencia.className = 'preco-referencia';
+                tdReferencia.textContent = `R$ ${produto.preco_toureiro.toFixed(2).replace('.', ',')}`;
+                tr.appendChild(tdReferencia);
+
+                // Colunas dos fornecedores
+                dadosTabela.fornecedores.forEach(fornecedor => {
+                    const tdFornecedor = document.createElement('td');
+                    const precoAtual = dadosTabela.precos[produto.id] && dadosTabela.precos[produto.id][fornecedor.id] || '';
+
+                    const input = document.createElement('input');
+                    input.type = 'number';
+                    input.step = '0.01';
+                    input.min = '0';
+                    input.className = 'preco-input';
+                    input.value = precoAtual;
+                    input.placeholder = '0,00';
+
+                    // Event listener para atualizar preço
+                    input.addEventListener('blur', function () {
+                        atualizarPreco(produto.id, fornecedor.id, this.value, this);
+                    });
+
+                    // Event listener para atualizar destaques em tempo real
+                    input.addEventListener('input', atualizarDestaques);
+                    input.addEventListener('change', atualizarDestaques);
+
+                    input.addEventListener('keypress', function (e) {
+                        if (e.key === 'Enter') {
+                            this.blur();
+                        }
+                    });
+
+                    // Destaque será aplicado pela função atualizarDestaques()
+
+                    tdFornecedor.appendChild(input);
+                    tr.appendChild(tdFornecedor);
+                });
+
+                tbody.appendChild(tr);
+            });
+
+            // Atualizar destaques após carregar a tabela
+            setTimeout(atualizarDestaques, 100);
+        }
+
+        /**
+         * Atualiza o preço de um produto para um fornecedor
+         */
+        async function atualizarPreco(produtoId, fornecedorId, preco, inputElement) {
+            if (!preco || preco === '') {
+                return;
+            }
+
+            try {
+                const response = await fetch('/atualizar_preco', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        produto_id: produtoId,
+                        fornecedor_id: fornecedorId,
+                        preco: parseFloat(preco)
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Atualizar dados locais
+                    if (!dadosTabela.precos[produtoId]) {
+                        dadosTabela.precos[produtoId] = {};
+                    }
+                    dadosTabela.precos[produtoId][fornecedorId] = parseFloat(preco);
+
+                    // Atualizar destaques após mudança de preço
+                    atualizarDestaques();
+                } else {
+                    mostrarAlerta('Erro ao atualizar preço', 'danger');
+                }
+            } catch (error) {
+                console.error('Erro ao atualizar preço:', error);
+                mostrarAlerta('Erro ao atualizar preço', 'danger');
+            }
+        }
+
+        /**
+         * Mostra/esconde indicador de loading
+         */
+        function mostrarLoading(show) {
+            const loading = document.getElementById('loading');
+            loading.style.display = show ? 'block' : 'none';
+        }
+
+        /**
+         * Exibe alertas para o usuário
+         */
+        function mostrarAlerta(mensagem, tipo) {
+            const container = document.getElementById('alertContainer');
+            const alertId = 'alert-' + Date.now();
+
+            const alertHTML = `
+                <div class="alert alert-${tipo} alert-dismissible fade show" role="alert" id="${alertId}">
+                    <i class="bi bi-${getIconeAlerta(tipo)} me-2"></i>
+                    ${mensagem}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+
+            container.insertAdjacentHTML('beforeend', alertHTML);
+
+            // Auto-remover após 5 segundos
+            setTimeout(() => {
+                const alert = document.getElementById(alertId);
+                if (alert) {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }
+            }, 5000);
+        }
+
+        /**
+         * Retorna o ícone apropriado para cada tipo de alerta
+         */
+        function getIconeAlerta(tipo) {
+            const icones = {
+                'success': 'check-circle',
+                'danger': 'exclamation-triangle',
+                'warning': 'exclamation-circle',
+                'info': 'info-circle'
+            };
+            return icones[tipo] || 'info-circle';
+        }
+
+        /**
+         * Pesquisa produtos na tabela em tempo real - versão otimizada
+         */
+        function pesquisarProduto() {
+            const termoPesquisa = document.getElementById('campoPesquisa').value.toLowerCase().trim();
+            const tabela = document.getElementById('tabelaPrecos');
+            const linhas = tabela.querySelectorAll('tbody tr');
+            const resultadoDiv = document.getElementById('resultadoPesquisa');
+
+            let produtosEncontrados = 0;
+            let primeiraLinha = null;
+
+            // Função para normalizar texto (remove acentos e caracteres especiais)
+            function normalizar(texto) {
+                return texto.toLowerCase()
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '') // Remove acentos
+                    .replace(/[^a-z0-9\s]/g, '') // Remove caracteres especiais
+                    .replace(/\s+/g, ' ') // Normaliza espaços
+                    .trim();
+            }
+
+            const termoNormalizado = normalizar(termoPesquisa);
+            const palavrasChave = termoNormalizado.split(' ').filter(p => p.length > 0);
+
+            linhas.forEach(linha => {
+                const descricaoProduto = linha.cells[0].textContent;
+                const descricaoNormalizada = normalizar(descricaoProduto);
+
+                let encontrou = false;
+
+                if (termoPesquisa === '') {
+                    encontrou = true;
+                } else {
+                    // Busca por correspondência exata primeiro
+                    if (descricaoNormalizada.includes(termoNormalizado)) {
+                        encontrou = true;
+                    } else {
+                        // Busca por todas as palavras-chave
+                        encontrou = palavrasChave.every(palavra =>
+                            descricaoNormalizada.includes(palavra)
+                        );
+                    }
+                }
+
+                if (encontrou) {
+                    linha.style.display = '';
+                    linha.classList.remove('table-warning');
+
+                    if (termoPesquisa !== '') {
+                        linha.classList.add('table-warning');
+                        linha.style.border = '2px solid #ffc107';
+                        produtosEncontrados++;
+
+                        if (!primeiraLinha) {
+                            primeiraLinha = linha;
+                        }
+                    } else {
+                        linha.style.border = '';
+                    }
+                } else {
+                    linha.style.display = 'none';
+                    linha.classList.remove('table-warning');
+                    linha.style.border = '';
+                }
+            });
+
+            // Atualizar resultado da pesquisa
+            if (termoPesquisa === '') {
+                resultadoDiv.innerHTML = 'Digite para pesquisar produtos na tabela';
+                resultadoDiv.className = 'text-muted small mt-2';
+            } else if (produtosEncontrados === 0) {
+                resultadoDiv.innerHTML = `<i class="bi bi-exclamation-triangle"></i> Nenhum produto encontrado para "${termoPesquisa}"`;
+                resultadoDiv.className = 'text-warning small mt-2';
+            } else {
+                resultadoDiv.innerHTML = `<i class="bi bi-check-circle"></i> ${produtosEncontrados} produto(s) encontrado(s)`;
+                resultadoDiv.className = 'text-success small mt-2';
+
+                // Rolar para o primeiro produto encontrado instantaneamente
+                if (primeiraLinha) {
+                    primeiraLinha.scrollIntoView({ behavior: 'auto', block: 'center' });
+                }
+            }
+        }
+
+        /**
+         * Limpa a pesquisa e mostra todos os produtos
+         */
+        function limparPesquisa() {
+            document.getElementById('campoPesquisa').value = '';
+            pesquisarProduto();
+        }
+
+        /**
+         * Atualiza os destaques dos menores preços
+         * Destaca apenas o menor preço de cada linha, incluindo produto TOUREIRO
+         * APENAS quando há fornecedores para comparação
+         * Ignora preços zerados
+         */
+        function atualizarDestaques() {
+            const linhas = document.querySelectorAll('#tabelaPrecos tbody tr');
+
+            linhas.forEach(linha => {
+                const celulas = linha.querySelectorAll('td');
+                if (celulas.length < 2) return;
+
+                const precosFornecedores = [];
+                const precosReferencia = [];
+
+                // Coleta preços separadamente: fornecedores vs TOUREIRO
+                for (let i = 1; i < celulas.length; i++) {
+                    let valor = 0;
+
+                    // Verifica se é uma célula com input (fornecedores)
+                    const input = celulas[i].querySelector('input');
+                    if (input) {
+                        valor = parseFloat(input.value.replace(',', '.'));
+                        if (!isNaN(valor) && valor > 0) {
+                            precosFornecedores.push({ valor, celula: celulas[i], indice: i });
+                        }
+                    } else {
+                        // Verifica se é célula de produto TOUREIRO (texto direto)
+                        const texto = celulas[i].textContent.trim();
+                        if (texto && texto !== '-' && texto !== '') {
+                            // Remove R$ e converte para número
+                            const numeroLimpo = texto.replace(/R\$\s?/, '').replace(',', '.');
+                            valor = parseFloat(numeroLimpo);
+                            if (!isNaN(valor) && valor > 0) {
+                                precosReferencia.push({ valor, celula: celulas[i], indice: i });
+                            }
+                        }
+                    }
+                }
+
+                // Remove destaque de todas as células
+                for (let i = 1; i < celulas.length; i++) {
+                    celulas[i].classList.remove('menor-preco');
+                    // Remove também inputs com classe preco-menor
+                    const input = celulas[i].querySelector('input');
+                    if (input) {
+                        input.classList.remove('preco-menor');
+                    }
+                }
+
+                // Só destaca se houver pelo menos um preço de fornecedor para comparação
+                if (precosFornecedores.length > 0) {
+                    // Combina todos os preços (fornecedores + TOUREIRO) para comparação
+                    const todosPrecos = [...precosFornecedores, ...precosReferencia];
+
+                    if (todosPrecos.length > 0) {
+                        const menorPreco = Math.min(...todosPrecos.map(p => p.valor));
+
+                        // Destaca APENAS o primeiro valor encontrado com o menor preço
+                        const primeiroMenor = todosPrecos.find(preco => preco.valor === menorPreco);
+                        if (primeiroMenor) {
+                            // Aplica o destaque sempre na célula td para manter aparência consistente
+                            primeiroMenor.celula.classList.add('menor-preco');
+                        }
+                    }
+                }
+            });
+        }
+
+        /**
+         * Adiciona atalhos de teclado para melhorar a experiência
+         */
+        document.addEventListener('DOMContentLoaded', function () {
+            // Atalho Ctrl+F para focar no campo de pesquisa
+            document.addEventListener('keydown', function (e) {
+                if (e.ctrlKey && e.key === 'f') {
+                    e.preventDefault();
+                    document.getElementById('campoPesquisa').focus();
+                }
+
+                // Esc para limpar pesquisa
+                if (e.key === 'Escape') {
+                    const campoPesquisa = document.getElementById('campoPesquisa');
+                    if (document.activeElement === campoPesquisa || campoPesquisa.value !== '') {
+                        limparPesquisa();
+                    }
+                }
+            });
+        });
+
+        /**
+         * Obtém a cor do badge para cada fornecedor (cores aleatórias)
+         */
+        function obterCorFornecedor(fornecedor) {
+            // Cache de cores para manter consistência durante a sessão
+            if (!window.coresFornecedores) {
+                window.coresFornecedores = {};
+            }
+            
+            // Se já existe uma cor para este fornecedor, retorna a mesma
+            if (window.coresFornecedores[fornecedor]) {
+                return window.coresFornecedores[fornecedor];
+            }
+            
+            // Array de cores disponíveis do Bootstrap
+            const coresDisponiveis = [
+                'bg-primary',
+                'bg-secondary', 
+                'bg-success',
+                'bg-danger',
+                'bg-warning',
+                'bg-info',
+                'bg-dark',
+                'bg-light text-dark'
+            ];
+            
+            // Gera um índice aleatório baseado no nome do fornecedor
+            let hash = 0;
+            for (let i = 0; i < fornecedor.length; i++) {
+                hash = fornecedor.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            const indice = Math.abs(hash) % coresDisponiveis.length;
+            
+            // Armazena e retorna a cor
+            const cor = coresDisponiveis[indice];
+            window.coresFornecedores[fornecedor] = cor;
+            return cor;
+        }
+
+        /**
+         * Abre a tabela flutuante com os melhores preços
+         */
+        function abrirTabelaMelhoresPrecos() {
+            const tbody = document.getElementById('tabelaMelhoresPrecosBody');
+            tbody.innerHTML = '';
+
+            if (!dadosTabela.produtos || dadosTabela.produtos.length === 0) {
+                mostrarAlerta('Nenhum produto encontrado para análise.', 'warning');
+                return;
+            }
+
+            // Obter apenas os produtos destacados na tabela principal
+            const produtosDestacados = obterProdutosVisiveis();
+
+            if (produtosDestacados.length === 0) {
+                mostrarAlerta('Nenhum produto destacado encontrado. Certifique-se de que há produtos com preços inseridos para comparação.', 'warning');
+                return;
+            }
+
+            const melhoresPrecos = calcularMelhoresPrecos(produtosDestacados);
+
+            melhoresPrecos.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="fw-medium">${item.produto}</td>
+                    <td class="text-success fw-bold">R$ ${item.preco.toFixed(2).replace('.', ',')}</td>
+                    <td>
+                        <span class="badge ${obterCorFornecedor(item.fornecedor)}">
+                            ${item.fornecedor}
+                        </span>
+                    </td>
+                    <td>
+                        <input type="number" 
+                               class="form-control form-control-sm quantidade-input" 
+                               value="1" 
+                               min="0" 
+                               step="1" 
+                               data-preco="${item.preco}"
+                               data-index="${index}"
+                               onchange="atualizarSubtotal(this)">
+                    </td>
+                    <td class="subtotal fw-bold">R$ ${item.preco.toFixed(2).replace('.', ',')}</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            // Mostrar o modal
+            const modal = new bootstrap.Modal(document.getElementById('modalMelhoresPrecos'));
+            modal.show();
+
+            // Calcular total inicial
+            calcularTotal();
+        }
+
+        /**
+         * Obtém apenas os produtos que estão destacados (com menor preço) na tabela principal
+         */
+        function obterProdutosVisiveis() {
+            const produtosDestacados = [];
+            const tabelaBody = document.getElementById('tabelaBody');
+            const linhasVisiveis = tabelaBody.querySelectorAll('tr:not([style*="display: none"])');
+
+            linhasVisiveis.forEach(linha => {
+                // Verifica se a linha tem alguma célula destacada com menor preço
+                const celulaDestacada = linha.querySelector('.menor-preco');
+                if (celulaDestacada) {
+                    const produtoId = linha.dataset.produtoId;
+                    if (produtoId) {
+                        const produto = dadosTabela.produtos.find(p => p.id == produtoId);
+                        if (produto) {
+                            produtosDestacados.push(produto);
+                        }
+                    }
+                }
+            });
+
+            return produtosDestacados;
+        }
+
+        /**
+         * Calcula os melhores preços para cada produto
+         */
+        function calcularMelhoresPrecos(produtos = null) {
+            const melhoresPrecos = [];
+            const produtosParaAnalise = produtos || dadosTabela.produtos;
+
+            produtosParaAnalise.forEach(produto => {
+                let melhorPreco = null;
+                let melhorFornecedor = '';
+
+                // Verificar preço TOUREIRO
+                if (produto.preco_toureiro && produto.preco_toureiro > 0) {
+                    melhorPreco = produto.preco_toureiro;
+                    melhorFornecedor = 'TOUREIRO';
+                }
+
+                // Verificar preços dos fornecedores
+                dadosTabela.fornecedores.forEach(fornecedor => {
+                    const preco = dadosTabela.precos[produto.id] && dadosTabela.precos[produto.id][fornecedor.id];
+
+                    if (preco && parseFloat(preco) > 0) {
+                        const precoNumerico = parseFloat(preco);
+                        if (melhorPreco === null || precoNumerico < melhorPreco) {
+                            melhorPreco = precoNumerico;
+                            melhorFornecedor = fornecedor.nome;
+                        }
+                    }
+                });
+
+                if (melhorPreco !== null) {
+                    melhoresPrecos.push({
+                        produto: produto.descricao,
+                        preco: melhorPreco,
+                        fornecedor: melhorFornecedor
+                    });
+                }
+            });
+
+            return melhoresPrecos;
+        }
+
+        /**
+         * Atualiza o subtotal de uma linha
+         */
+        function atualizarSubtotal(input) {
+            const quantidade = parseFloat(input.value) || 0;
+            const preco = parseFloat(input.dataset.preco);
+            const subtotal = quantidade * preco;
+
+            const row = input.closest('tr');
+            const subtotalCell = row.querySelector('.subtotal');
+            subtotalCell.textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+
+            calcularTotal();
+        }
+
+        /**
+         * Calcula o total geral
+         */
+        function calcularTotal() {
+            const inputs = document.querySelectorAll('.quantidade-input');
+            let total = 0;
+
+            inputs.forEach(input => {
+                const quantidade = parseFloat(input.value) || 0;
+                const preco = parseFloat(input.dataset.preco);
+                total += quantidade * preco;
+            });
+
+            document.getElementById('totalGeral').textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+        }
+
+        /**
+         * Exporta a lista de melhores preços
+         */
+        function exportarLista() {
+            const tabela = document.getElementById('tabelaMelhoresPrecos');
+            const rows = tabela.querySelectorAll('tbody tr');
+
+            let csv = 'Produto,Melhor Preço,Fornecedor,Quantidade,Subtotal\n';
+
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                const produto = cells[0].textContent.trim();
+                const preco = cells[1].textContent.trim();
+                const fornecedor = cells[2].textContent.trim();
+                const quantidade = cells[3].querySelector('input').value;
+                const subtotal = cells[4].textContent.trim();
+
+                csv += `"${produto}","${preco}","${fornecedor}","${quantidade}","${subtotal}"\n`;
+            });
+
+            const total = document.getElementById('totalGeral').textContent;
+            csv += `"TOTAL GERAL","","","","${total}"\n`;
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'melhores_precos.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        /**
+         * Limpa todos os dados da tabela principal, zerando todos os valores
+         */
+        function limparTabela() {
+            if (confirm('Tem certeza que deseja limpar toda a tabela? Esta ação não pode ser desfeita.')) {
+                // Limpar todos os inputs de preço na tabela principal
+                const inputs = document.querySelectorAll('#tabelaBody input[type="number"]');
+                inputs.forEach(input => {
+                    input.value = '';
+                });
+
+                // Limpar dados de preços do objeto dadosTabela
+                dadosTabela.precos = {};
+
+                // Remover todas as classes de destaque
+                const celulas = document.querySelectorAll('#tabelaBody td');
+                celulas.forEach(celula => {
+                    celula.classList.remove('menor-preco', 'maior-preco');
+                });
+
+                // Atualizar contador de produtos
+                atualizarContadorProdutos();
+
+                mostrarAlerta('Tabela limpa com sucesso!', 'success');
+            }
+        }
+
+        /**
+         * Gera um pedido com os produtos selecionados
+         */
+        /**
+         * Gera um PDF com os produtos da tabela de melhores preços
+         */
+        async function gerarPedido() {
+            try {
+                // Obter dados da tabela de melhores preços
+                const tabela = document.getElementById('tabelaMelhoresPrecos');
+                const tbody = tabela.querySelector('tbody');
+                const linhas = tbody.querySelectorAll('tr');
+
+                if (linhas.length === 0) {
+                    mostrarAlerta('Não há produtos na tabela para gerar o PDF.', 'warning');
+                    return;
+                }
+
+                const itens = [];
+                let totalGeral = 0;
+
+                linhas.forEach(linha => {
+                    const cells = linha.querySelectorAll('td');
+                    if (cells.length >= 5) {
+                        const produto = cells[0].textContent.trim();
+                        const precoTexto = cells[1].textContent.trim();
+                        const fornecedor = cells[2].querySelector('.badge') ?
+                            cells[2].querySelector('.badge').textContent.trim() :
+                            cells[2].textContent.trim();
+                        const quantidadeInput = cells[3].querySelector('input');
+                        const quantidade = quantidadeInput ? parseFloat(quantidadeInput.value) || 1 : 1;
+                        const subtotalTexto = cells[4].textContent.trim();
+
+                        // Converter preço para número
+                        const preco = parseFloat(precoTexto.replace('R$', '').replace(',', '.').trim());
+                        const subtotal = parseFloat(subtotalTexto.replace('R$', '').replace(',', '.').trim());
+
+                        itens.push({
+                            produto: produto,
+                            preco: preco,
+                            fornecedor: fornecedor,
+                            quantidade: quantidade,
+                            subtotal: subtotal
+                        });
+
+                        totalGeral += subtotal;
+                    }
+                });
+
+                // Enviar dados para o backend
+                const response = await fetch('/gerar_pdf_pedido', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        itens: itens,
+                        total: totalGeral
+                    })
+                });
+
+                if (response.ok) {
+                    // Criar um blob com o PDF
+                    const blob = await response.blob();
+
+                    // Criar URL temporária para download
+                    const url = window.URL.createObjectURL(blob);
+
+                    // Criar elemento de link temporário para download
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `pedido_melhores_precos_${new Date().toISOString().split('T')[0]}.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+
+                    // Limpar URL temporária
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+
+                    mostrarAlerta('PDF do pedido gerado com sucesso!', 'success');
+                } else {
+                    const errorData = await response.json();
+                    mostrarAlerta(`Erro ao gerar PDF: ${errorData.error}`, 'danger');
+                }
+
+            } catch (error) {
+                console.error('Erro ao gerar PDF do pedido:', error);
+                mostrarAlerta('Erro ao gerar PDF do pedido.', 'danger');
+            }
+        }
+
+        /**
+         * Exporta a tabela completa em PDF em modo paisagem
+         */
+        async function exportarTabelaPDF() {
+            try {
+                mostrarLoading(true);
+
+                const response = await fetch('/exportar_tabela_pdf', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    // Criar um blob com o PDF
+                    const blob = await response.blob();
+
+                    // Criar URL temporária para download
+                    const url = window.URL.createObjectURL(blob);
+
+                    // Criar elemento de link temporário para download
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `tabela_completa_${new Date().toISOString().split('T')[0]}.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+
+                    // Limpar recursos
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+
+                    mostrarAlerta('Tabela exportada com sucesso!', 'success');
+                } else {
+                    const error = await response.json();
+                    mostrarAlerta('Erro ao exportar tabela: ' + (error.error || 'Erro desconhecido'), 'danger');
+                }
+            } catch (error) {
+                console.error('Erro ao exportar tabela:', error);
+                mostrarAlerta('Erro ao exportar tabela', 'danger');
+            } finally {
+                mostrarLoading(false);
+            }
+        }
+
+        /**
+         * Gera relatório PDF apenas dos itens da tabela atual
+         */
+        async function gerarRelatorioMelhoresPrecos() {
+            try {
+                mostrarLoading(true);
+
+                // Verificar se a modal de melhores preços está aberta e tem dados
+                const tabela = document.getElementById('tabelaMelhoresPrecos');
+
+                if (!tabela) {
+                    mostrarAlerta('Tabela de melhores preços não encontrada.', 'warning');
+                    return;
+                }
+
+                const linhas = tabela.querySelectorAll('tbody tr');
+                if (linhas.length === 0) {
+                    mostrarAlerta('Não há itens na tabela de melhores preços para gerar o relatório.', 'warning');
+                    return;
+                }
+
+                // Extrair dados da tabela de melhores preços
+                const itens = [];
+                let totalGeral = 0;
+
+                linhas.forEach(linha => {
+                    const colunas = linha.querySelectorAll('td');
+                    if (colunas.length >= 5) {
+                        const produto = colunas[0].textContent.trim();
+                        const precoText = colunas[1].textContent.trim();
+                        const fornecedor = colunas[2].textContent.trim();
+                        const quantidadeText = colunas[3].textContent.trim();
+                        const subtotalText = colunas[4].textContent.trim();
+
+                        // Converter preço (remover R$ e trocar vírgula por ponto)
+                        const preco = parseFloat(precoText.replace('R$', '').replace(',', '.').trim());
+                        const quantidade = parseInt(quantidadeText);
+                        const subtotal = parseFloat(subtotalText.replace('R$', '').replace(',', '.').trim());
+
+                        if (!isNaN(preco) && !isNaN(quantidade) && !isNaN(subtotal)) {
+                            itens.push({
+                                produto: produto,
+                                preco: preco,
+                                fornecedor: fornecedor,
+                                quantidade: quantidade,
+                                subtotal: subtotal
+                            });
+                            totalGeral += subtotal;
+                        }
+                    }
+                });
+
+                if (itens.length === 0) {
+                    mostrarAlerta('Não foi possível extrair dados válidos da tabela.', 'warning');
+                    return;
+                }
+
+                const dadosRelatorio = {
+                    itens: itens,
+                    total: totalGeral
+                };
+
+                // Enviar dados para o backend
+                const response = await fetch('/relatorio_melhores_precos', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(dadosRelatorio)
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = `relatorio_melhores_precos_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+
+                    mostrarAlerta('Relatório de melhores preços gerado com sucesso!', 'success');
+                } else {
+                    const error = await response.json();
+                    mostrarAlerta('Erro ao gerar relatório: ' + (error.error || 'Erro desconhecido'), 'danger');
+                }
+            } catch (error) {
+                console.error('Erro ao gerar relatório de melhores preços:', error);
+                mostrarAlerta('Erro ao gerar relatório de melhores preços', 'danger');
+            } finally {
+                mostrarLoading(false);
+            }
+        }
+    </script>
+</body>
+
+</html>

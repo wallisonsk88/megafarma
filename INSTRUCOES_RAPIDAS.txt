@@ -1,0 +1,108 @@
+===============================================================================
+                    SISTEMA MEGAFARMA - INSTRUÇÕES RÁPIDAS
+===============================================================================
+
+🚀 COMO EXECUTAR EM OUTRO COMPUTADOR:
+
+1. EXTRAIR ARQUIVOS:
+   - Extraia todos os arquivos do ZIP em uma pasta
+   - Ex: C:\MegaFarma\
+
+2. EXECUTAR O SISTEMA:
+   - Duplo-clique em "Iniciar_MegaFarma.bat"
+   - OU duplo-clique em "MegaFarma_Sistema_Cotacao.exe"
+
+3. ACESSAR NO NAVEGADOR:
+   - Abra seu navegador (Chrome, Firefox, Edge)
+   - Digite: http://localhost:5000
+   - Pressione ENTER
+
+===============================================================================
+
+📋 REQUISITOS MÍNIMOS:
+   ✓ Windows 10 ou superior (64-bit)
+   ✓ 4GB de RAM
+   ✓ 500MB de espaço livre
+   ✓ Navegador web
+
+❌ NÃO PRECISA INSTALAR:
+   - Python
+   - Bibliotecas
+   - Banco de dados
+   - Servidor web
+
+===============================================================================
+
+🔧 SOLUÇÃO DE PROBLEMAS:
+
+❓ Antivírus bloqueia?
+   → Adicione exceção para "MegaFarma_Sistema_Cotacao.exe"
+
+❓ Erro de permissão?
+   → Clique com botão direito → "Executar como administrador"
+
+❓ Página não carrega?
+   → Aguarde alguns segundos após iniciar
+   → Verifique se apareceu "Running on http://127.0.0.1:5000" no terminal
+
+❓ Porta 5000 em uso?
+   → Feche outros programas
+   → Reinicie o computador
+
+===============================================================================
+
+📁 ARQUIVOS IMPORTANTES:
+
+   MegaFarma_Sistema_Cotacao.exe  → Programa principal
+   Iniciar_MegaFarma.bat         → Script de inicialização
+   templates/                     → Interface do sistema
+   uploads/                       → Arquivos enviados
+   megafarma.db                  → Banco de dados (criado automaticamente)
+
+===============================================================================
+
+🌐 ACESSO PELA REDE:
+
+   Para permitir acesso de outros computadores:
+   1. Descubra o IP do computador: ipconfig
+   2. Configure firewall para permitir porta 5000
+   3. Acesse de outros PCs: http://[IP]:5000
+
+===============================================================================
+
+💾 BACKUP:
+
+   Para fazer backup dos dados:
+   - Copie o arquivo "megafarma.db"
+   - Copie a pasta "uploads/"
+   - Guarde em local seguro
+
+===============================================================================
+
+📞 SUPORTE:
+
+   Em caso de problemas:
+   1. Anote a mensagem de erro completa
+   2. Verifique se todos os arquivos estão na pasta
+   3. Tente executar como administrador
+   4. Verifique configurações do firewall/antivírus
+
+===============================================================================
+
+✅ CHECKLIST RÁPIDO:
+
+   [ ] Extraí todos os arquivos?
+   [ ] Executei o programa?
+   [ ] Aguardei a inicialização?
+   [ ] Acessei http://localhost:5000?
+   [ ] O sistema carregou corretamente?
+
+===============================================================================
+
+🎉 PRONTO! Sistema funcionando e acessível via navegador.
+
+   Versão: MegaFarma v5.0
+   Tecnologia: Flask + SQLite
+   Compatibilidade: Windows 10+ (64-bit)
+
+===============================================================================
