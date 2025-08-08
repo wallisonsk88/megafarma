@@ -15,7 +15,7 @@ No Render, configure:
 
 ### 2. **Configurações do Render:**
 ```
-Environment: Python 3.11.5
+Environment: Python 3.10.12
 Build Command: pip install -r requirements-render.txt
 Start Command: gunicorn api.app_web:app --bind 0.0.0.0:$PORT
 Root Directory: (deixe vazio)
