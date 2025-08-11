@@ -1014,9 +1014,19 @@ def get_db_path():
     return os.path.join(get_base_path(), 'megafarma.db')
 
 
-# Inicializar banco de dados
-init_db()
-print(f"Banco de dados inicializado em: {get_db_path()}")
+# Função para garantir que o banco está inicializado
+def ensure_db_initialized():
+    """Garante que o banco de dados está inicializado (para ambientes serverless)"""
+    db_path = get_db_path()
+    if not os.path.exists(db_path):
+        init_db()
+        print(f"Banco de dados inicializado em: {db_path}")
 
+# Inicializar banco de dados para desenvolvimento local
 if __name__ == '__main__':
+    init_db()
+    print(f"Banco de dados inicializado em: {get_db_path()}")
     app.run(debug=True, host='0.0.0.0', port=5000)
+else:
+    # Para ambientes serverless (Vercel), inicializar quando necessário
+    ensure_db_initialized()

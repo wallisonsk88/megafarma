@@ -1,33 +1,6 @@
-# 🏥 MegaFarma - Sistema de Comparação de Preços
+# MegaFarma - Sistema de Comparação de Preços
 
 Sistema web para comparação de preços de medicamentos entre diferentes fornecedores.
-
-> ✨ **NOVIDADE**: Agora disponível para hospedagem web! Deploy em minutos no Vercel, Railway ou Render.
-
-## 🌐 Deploy Web (Hospedagem Online)
-
-### 🎯 Opções Gratuitas Disponíveis:
-
-| Plataforma | Tempo | Banco | SSL | Recomendação |
-|------------|-------|-------|-----|-------------|
-| **Vercel** | 2 min | SQLite | ✅ | Ideal para começar |
-| **Railway** | 3 min | PostgreSQL | ✅ | Melhor para produção |
-| **Render** | 5 min | PostgreSQL | ✅ | Boa alternativa |
-
-### 🚀 Deploy Rápido (Vercel):
-
-```bash
-# 1. Subir para GitHub
-git init
-git add .
-git commit -m "MegaFarma Sistema Web"
-git remote add origin https://github.com/SEU_USUARIO/megafarma.git
-git push -u origin main
-
-# 2. Acessar vercel.com → Conectar GitHub → Deploy!
-```
-
-**📖 Guia Completo**: Veja `DEPLOY_WEB_INSTRUCOES.md` e `GUIA_HOSPEDAGEM_WEB.md`
 
 ## 🚀 Funcionalidades
 

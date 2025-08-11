@@ -2,17 +2,27 @@
   "version": 2,
   "builds": [
     {
-      "src": "app.py",
-      "use": "@vercel/python"
+      "src": "api/app.py",
+      "use": "@vercel/python",
+      "config": {
+        "runtime": "python3.9"
+      }
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "app.py"
+      "dest": "api/app.py"
     }
   ],
   "env": {
-    "FLASK_ENV": "production"
+    "PYTHONPATH": ".",
+    "PYTHONUNBUFFERED": "1"
+  },
+  "functions": {
+    "api/app.py": {
+      "memory": 1024,
+      "maxDuration": 30
+    }
   }
 }
